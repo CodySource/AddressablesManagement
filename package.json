@@ -1,0 +1,14 @@
+{
+  "name": "com.codysource.addressablesmanagement",
+  "version": "1.0.0",
+  "displayName": "Addressables Management",
+  "description": "This package allows for the instantiation of tracked addressable prefabs.",
+  "unity": "2020.3",
+  "unityRelease": "15f2",
+  "dependencies": {
+    "com.unity.addressables": "1.16.19"
+ },
+  "author": {
+    "name": "Cody Source"
+  }
+}
