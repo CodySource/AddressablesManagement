@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
@@ -41,7 +40,7 @@ namespace CodySource
         /// <summary>
         /// Tracks all new instances
         /// </summary>
-        private static List<int> _newInstances = new List<int>();
+        private static List<int> _newHandleIndexes = new List<int>();
 
         /// <summary>
         /// Used to remove instances after notification of instantiation
@@ -57,10 +56,10 @@ namespace CodySource
         /// </summary>
         public static void Instantiate(string pName)
         {
-            _instance = instance;
+            _instance = _instance ?? instance;
             AsyncOperationHandle<GameObject> _handle = Addressables.InstantiateAsync(pName);
             _handles.Add(_handle);
-            _newInstances.Add(_handles.Count);
+            _newHandleIndexes.Add(_handles.Count - 1);
         }
 
         /// <summary>
@@ -123,14 +122,15 @@ namespace CodySource
         /// </summary>
         private void _CheckHandlesForNewInstances()
         {
-            if (_newInstances.Count == 0) return;
-            for (int i = 0; i < _newInstances.Count; i++)
+            if (_newHandleIndexes.Count == 0) return;
+            for (int i = 0; i < _newHandleIndexes.Count; i++)
             {
-                if (!_handles[i].IsDone) continue;
-                _remove.Add(i);
-                onInstantiate?.Invoke(_handles[i].Result);
+                int index = _newHandleIndexes[i];
+                if (!_handles[index].IsDone) continue;
+                _remove.Add(index);
+                onInstantiate?.Invoke(_handles[index].Result);
             }
-            _remove.ForEach(i => _newInstances.RemoveAt(i));
+            _remove.ForEach(i => _newHandleIndexes.RemoveAt(i));
             _remove.Clear();
         }
 
